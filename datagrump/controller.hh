@@ -11,6 +11,10 @@ private:
   bool debug_; /* Enables debugging output */
 
   /* Add member variables here */
+  uint64_t packets_received_;
+  uint64_t calc_time_;  /* Last time we did a packet/sec calculation. */
+  double pps_estimate_; /* Current packet/sec estimate. */
+  uint32_t best_rtt_;   /* The best RTT (in milliseconds) we have seen. */
 
 public:
   /* Public interface for the congestion controller */
