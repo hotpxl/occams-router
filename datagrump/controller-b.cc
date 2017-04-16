@@ -37,7 +37,8 @@ void Controller::ack_received(uint64_t const sequence_number_acked,
               << " by receiver's clock)" << std::endl;
   }
 
-  if (kDelayThreshold < timestamp_ack_received - send_timestamp_acked) {
+  uint64_t const rtt = timestamp_ack_received - send_timestamp_acked;
+  if (rtt > kDelayThreshold) {
     if (1 < current_window_size) {
       current_window_size /= 2;
     }
