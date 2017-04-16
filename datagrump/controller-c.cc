@@ -4,7 +4,7 @@
 #include "timestamp.hh"
 
 static unsigned int current_window_size = 1;
-constexpr uint64_t const kLowWatermark = 20;
+constexpr uint64_t const kLowWatermark = 100;
 constexpr uint64_t const kHighWatermark = 500;
 
 Controller::Controller(bool const debug) : debug_{debug} {}
