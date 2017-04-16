@@ -2,6 +2,7 @@
 #define CONTROLLER_HH
 
 #include <cstdint>
+#include <deque>
 
 /* Congestion controller interface */
 
@@ -11,10 +12,32 @@ private:
   bool debug_; /* Enables debugging output */
 
   /* Add member variables here */
-  uint64_t packets_received_;
-  uint64_t calc_time_;  /* Last time we did a packet/sec calculation. */
-  double pps_estimate_; /* Current packet/sec estimate. */
-  uint32_t best_rtt_;   /* The best RTT (in milliseconds) we have seen. */
+  static constexpr int kInterval = 20;    /* Measurement interval (ms) */
+  static constexpr int kMaxEstimates = 3;
+
+  uint64_t packets_received_;    /* Packets received in the last interval. */
+  uint64_t calc_time_;           /* Last time we did a pps estimate. */
+  std::deque<double> pps_;       /* N most recent PPS estimates. */
+  uint32_t best_rtt_;            /* Best RTT we have seen the whole time. */
+
+  void update_pps() {
+    const double pps = (1.0 * packets_received_) / kInterval;
+
+    if (pps_.size() == kMaxEstimates) pps_.pop_back();
+    pps_.push_front(pps);
+
+    packets_received_ = 0;
+  }
+
+  double avg_pps() const {
+    double total = 0.0;
+    if (pps_.empty()) return total;
+
+    for (const auto pps : pps_) {
+      total += pps;
+    }
+    return total / pps_.size();
+  }
 
 public:
   /* Public interface for the congestion controller */
