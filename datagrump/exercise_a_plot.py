@@ -25,8 +25,8 @@ def main():
                 delays[current_size].append(float(l.split()[4]))
     for window_size in throughputs:
         plt.scatter(
-            throughputs[window_size],
             delays[window_size],
+            throughputs[window_size],
             marker='x',
             label=window_size)
     plt.gca().invert_xaxis()
