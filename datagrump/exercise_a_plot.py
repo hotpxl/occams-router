@@ -32,6 +32,7 @@ def main():
     plt.gca().invert_xaxis()
     plt.ylabel('Throughput (Mbits/s)')
     plt.xlabel('Delay (ms)')
+    plt.xscale('log')
     plt.title('Fixed window sizes')
     plt.legend()
     plt.savefig('exercise_a.png', bbox_inches='tight')
