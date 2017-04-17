@@ -19,7 +19,7 @@ unsigned int Controller::window_size( void )
 {
   // We can tune the algorithm by adjusting the constant used
   // to calculate max_delay.
-  const int32_t max_delay = static_cast<int>(best_rtt_ * 1.6);
+  const int32_t max_delay = static_cast<int>(best_rtt_ * 1.75);
   return avg_pps() * max_delay;
 }
 
@@ -58,6 +58,8 @@ void Controller::ack_received( const uint64_t sequence_number_acked,
 	 << endl;
   }
 
+  packets_received_++;
+
   // Update our best-observed RTT if possible.
   const uint64_t rtt = timestamp_ack_received - send_timestamp_acked;
   if (rtt < best_rtt_) {
@@ -70,8 +72,6 @@ void Controller::ack_received( const uint64_t sequence_number_acked,
     calc_time_ = timestamp_ack_received - (
         timestamp_ack_received % kInterval);
   }
-
-  packets_received_++;
 }
 
 /* How long to wait if there are no acks before sending one more packet */

@@ -12,8 +12,8 @@ private:
   bool debug_; /* Enables debugging output */
 
   /* Add member variables here */
-  static constexpr int kInterval = 20;    /* Measurement interval (ms) */
-  static constexpr int kMaxEstimates = 3;
+  static constexpr int kInterval = 25;    /* Measurement interval (ms) */
+  static constexpr int kMaxEstimates = 5;
 
   uint64_t packets_received_;    /* Packets received in the last interval. */
   uint64_t calc_time_;           /* Last time we did a pps estimate. */
@@ -30,9 +30,9 @@ private:
   }
 
   double avg_pps() const {
-    double total = 0.0;
-    if (pps_.empty()) return total;
+    if (pps_.empty()) return 0;
 
+    double total = 0.0;
     for (const auto pps : pps_) {
       total += pps;
     }
