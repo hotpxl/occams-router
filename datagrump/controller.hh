@@ -12,31 +12,34 @@ private:
   bool debug_; /* Enables debugging output */
 
   /* Add member variables here */
-  static constexpr int kInterval = 25;    /* Measurement interval (ms) */
-  static constexpr int kMaxEstimates = 5;
+
+  // TUNING PARAMETERS
+  static constexpr int kIntervalMs = 25;  /* Measurement interval (ms) */
+  static constexpr int kMaxEstimates = 5; /* Number of estimates to keep */
+  static constexpr double kBwAggressiveness = 1.75;
 
   uint64_t packets_received_;    /* Packets received in the last interval. */
-  uint64_t calc_time_;           /* Last time we did a pps estimate. */
-  std::deque<double> pps_;       /* N most recent PPS estimates. */
+  uint64_t calc_time_;           /* Last time we did a packet/ms estimate. */
+  std::deque<double> ppms_;      /* N most recent packet/ms estimates. */
   uint32_t best_rtt_;            /* Best RTT we have seen the whole time. */
 
-  void update_pps() {
-    const double pps = (1.0 * packets_received_) / kInterval;
+  void update_ppms() {
+    const double ppms = (1.0 * packets_received_) / kIntervalMs;
 
-    if (pps_.size() == kMaxEstimates) pps_.pop_back();
-    pps_.push_front(pps);
+    if (ppms_.size() == kMaxEstimates) ppms_.pop_back();
+    ppms_.push_front(ppms);
 
     packets_received_ = 0;
   }
 
-  double avg_pps() const {
-    if (pps_.empty()) return 0;
+  double avg_ppms() const {
+    if (ppms_.empty()) return 0;
 
     double total = 0.0;
-    for (const auto pps : pps_) {
-      total += pps;
+    for (const auto ppms : ppms_) {
+      total += ppms;
     }
-    return total / pps_.size();
+    return total / ppms_.size();
   }
 
 public:

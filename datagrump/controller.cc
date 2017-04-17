@@ -9,7 +9,7 @@ using namespace std;
 
 /* Default constructor */
 Controller::Controller( const bool debug )
-  : debug_(debug), packets_received_(0), calc_time_(0), pps_(),
+  : debug_(debug), packets_received_(0), calc_time_(0), ppms_(),
     best_rtt_(numeric_limits<uint32_t>::max())
 {
 }
@@ -17,10 +17,11 @@ Controller::Controller( const bool debug )
 /* Get current window size, in datagrams */
 unsigned int Controller::window_size( void )
 {
-  // We can tune the algorithm by adjusting the constant used
-  // to calculate max_delay.
-  const int32_t max_delay = static_cast<int>(best_rtt_ * 1.75);
-  return avg_pps() * max_delay;
+  // We can tune the algorithm by adjusting the kBwAggressiveness
+  // parameter -- higher values try to get more throughput at the cost
+  // of higher latency.
+  const int32_t max_delay = static_cast<int>(best_rtt_ * kBwAggressiveness);
+  return avg_ppms() * max_delay;
 }
 
 /* A datagram was sent */
@@ -34,9 +35,9 @@ void Controller::datagram_was_sent( const uint64_t sequence_number,
          << " sent datagram " << sequence_number << endl;
   }
 
-  if ((send_timestamp - calc_time_) >= kInterval) {
-    update_pps();
-    calc_time_ = send_timestamp - (send_timestamp % kInterval);
+  if ((send_timestamp - calc_time_) >= kIntervalMs) {
+    update_ppms();
+    calc_time_ = send_timestamp - (send_timestamp % kIntervalMs);
   }
 }
 
@@ -67,10 +68,10 @@ void Controller::ack_received( const uint64_t sequence_number_acked,
     if (debug_) cerr << "Best observed RTT = " << best_rtt_ << endl;
   }
 
-  if ((timestamp_ack_received - calc_time_) >= kInterval) {
-    update_pps();
+  if ((timestamp_ack_received - calc_time_) >= kIntervalMs) {
+    update_ppms();
     calc_time_ = timestamp_ack_received - (
-        timestamp_ack_received % kInterval);
+        timestamp_ack_received % kIntervalMs);
   }
 }
 
