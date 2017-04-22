@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./run-contest $USER
+./run-contest occams_router

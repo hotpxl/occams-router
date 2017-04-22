@@ -16,7 +16,7 @@ private:
   // TUNING PARAMETERS
   static constexpr int kIntervalMs = 25;  /* Measurement interval (ms) */
   static constexpr int kMaxEstimates = 5; /* Number of estimates to keep */
-  static constexpr double kBwAggressiveness = 1.75;
+  static constexpr double kBwAggressiveness = 1.5;
 
   uint64_t packets_received_;    /* Packets received in the last interval. */
   uint64_t calc_time_;           /* Last time we did a packet/ms estimate. */
