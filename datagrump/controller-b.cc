@@ -3,15 +3,15 @@
 #include "timestamp.hh"
 
 Controller::Controller(bool const debug)
-    : debug_{debug}, current_window_size_{1} {}
+    : debug_{debug}, current_window_size_{1.0} {}
 
 unsigned int Controller::window_size() {
   if (debug_) {
     std::cerr << "At time " << timestamp_ms() << " window size is "
-              << current_window_size_ << std::endl;
+              << static_cast<unsigned int>(current_window_size_) << std::endl;
   }
 
-  return current_window_size_;
+  return static_cast<unsigned int>(current_window_size_);
 }
 
 void Controller::datagram_was_sent(std::uint64_t sequence_number,
@@ -36,11 +36,11 @@ void Controller::ack_received(std::uint64_t sequence_number_acked,
 
   std::uint64_t const rtt = timestamp_ack_received - send_timestamp_acked;
   if (kDelayThreshold < rtt) {
-    if (1 < current_window_size_) {
-      current_window_size_ /= 2;
+    if (2.0 <= current_window_size_) {
+      current_window_size_ /= 2.0;
     }
   } else {
-    current_window_size_ += 1;
+    current_window_size_ += 1.0 / current_window_size_;
   }
 }
 

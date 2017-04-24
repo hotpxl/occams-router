@@ -22,7 +22,7 @@ class Controller {
  private:
   constexpr static std::uint64_t const kDelayThreshold = 100;
   bool debug_;
-  unsigned int current_window_size_;
+  double current_window_size_;
 };
 
 #endif
