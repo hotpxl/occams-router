@@ -36,8 +36,7 @@ def main():
     plt.ylabel('Throughput (Mbits/s)')
     plt.xlabel('Delay (ms)')
     plt.xscale('log')
-    plt.title('Fixed window sizes')
-    plt.legend()
+    plt.title('Delay-triggered scheme')
     plt.savefig('exercise_c.png', bbox_inches='tight')
 
 
