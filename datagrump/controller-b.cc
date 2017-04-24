@@ -2,8 +2,7 @@
 #include "controller.hh"
 #include "timestamp.hh"
 
-Controller::Controller(bool const debug)
-    : debug_{debug}, current_window_size_{1.0} {}
+Controller::Controller(bool debug) : debug_{debug}, current_window_size_{1.0} {}
 
 unsigned int Controller::window_size() {
   if (debug_) {

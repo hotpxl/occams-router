@@ -5,7 +5,7 @@
 
 class Controller {
  public:
-  Controller(bool const debug);
+  Controller(bool debug);
 
   unsigned int window_size();
 

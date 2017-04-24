@@ -20,9 +20,7 @@ class Controller {
   unsigned int timeout_ms();
 
  private:
-  constexpr static std::uint64_t const kDelayThreshold = 100;
   bool debug_;
-  double current_window_size_;
 };
 
 #endif
