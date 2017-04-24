@@ -1,34 +1,31 @@
 #include <iostream>
-
 #include "controller.hh"
 #include "timestamp.hh"
 
-static unsigned int current_window_size = 1;
-constexpr uint64_t const kDelayThreshold = 100;
+Controller::Controller(bool const debug)
+    : debug_{debug}, current_window_size_{1} {}
 
-Controller::Controller(bool const debug) : debug_{debug} {}
-
-unsigned int Controller::window_size(void) {
+unsigned int Controller::window_size() {
   if (debug_) {
     std::cerr << "At time " << timestamp_ms() << " window size is "
-              << current_window_size << std::endl;
+              << current_window_size_ << std::endl;
   }
 
-  return current_window_size;
+  return current_window_size_;
 }
 
-void Controller::datagram_was_sent(uint64_t const sequence_number,
-                                   uint64_t const send_timestamp) {
+void Controller::datagram_was_sent(std::uint64_t sequence_number,
+                                   std::uint64_t send_timestamp) {
   if (debug_) {
     std::cerr << "At time " << send_timestamp << " sent datagram "
               << sequence_number << std::endl;
   }
 }
 
-void Controller::ack_received(uint64_t const sequence_number_acked,
-                              uint64_t const send_timestamp_acked,
-                              uint64_t const recv_timestamp_acked,
-                              uint64_t const timestamp_ack_received) {
+void Controller::ack_received(std::uint64_t sequence_number_acked,
+                              std::uint64_t send_timestamp_acked,
+                              std::uint64_t recv_timestamp_acked,
+                              std::uint64_t timestamp_ack_received) {
   if (debug_) {
     std::cerr << "At time " << timestamp_ack_received
               << " received ack for datagram " << sequence_number_acked
@@ -37,14 +34,14 @@ void Controller::ack_received(uint64_t const sequence_number_acked,
               << " by receiver's clock)" << std::endl;
   }
 
-  uint64_t const rtt = timestamp_ack_received - send_timestamp_acked;
-  if (rtt > kDelayThreshold) {
-    if (1 < current_window_size) {
-      current_window_size /= 2;
+  std::uint64_t const rtt = timestamp_ack_received - send_timestamp_acked;
+  if (kDelayThreshold < rtt) {
+    if (1 < current_window_size_) {
+      current_window_size_ /= 2;
     }
   } else {
-    current_window_size += 1;
+    current_window_size_ += 1;
   }
 }
 
-unsigned int Controller::timeout_ms(void) { return 1000; }
+unsigned int Controller::timeout_ms() { return 1000; }
