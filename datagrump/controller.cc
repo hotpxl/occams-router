@@ -78,5 +78,7 @@ void Controller::ack_received( const uint64_t sequence_number_acked,
 /* How long to wait if there are no acks before sending one more packet */
 unsigned int Controller::timeout_ms(void)
 {
-  return 100;  /* Use 100ms based on the Sprout talk. */
+  if (best_rtt_ <= 100)
+    return static_cast<int>(best_rtt_ * kBwAggressiveness);;
+  return 100;
 }
